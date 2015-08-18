@@ -154,6 +154,7 @@ class DigiComModelOrder extends JModelAdmin
 		{
 
 			$item->products = $this->getProducts($item->id);
+			$item->logs 			= $this->getLogs($item->id);
 
 		}
 
@@ -168,6 +169,17 @@ class DigiComModelOrder extends JModelAdmin
 		$db->setQuery($sql);
 		return $db->loadObjectList();
 	}
+
+
+	public function getLogs($order)
+	{
+		$db = JFactory::getDBO();
+		$sql = "SELECT * FROM #__digicom_log WHERE callbackid='". $order ."'";
+		$db->setQuery($sql);
+		return $db->loadObjectList();
+	}
+
+
 
 	/**
 	 * Method to validate the form data.
@@ -215,7 +227,7 @@ class DigiComModelOrder extends JModelAdmin
 		if(empty($table->transaction_number)){
 			$data['transaction_number'] = DigiComSiteHelperDigicom::getUniqueTransactionId($table->id);
 		}
-
+		$logtype = 'status';
 		if(parent::save($data)){
 
 			if($status == "Pending"){
@@ -225,6 +237,7 @@ class DigiComModelOrder extends JModelAdmin
 			elseif($status == "Active" or $status == "Paid"){
 				$sql = "update #__digicom_orders_details set published=1 where orderid in ('" . $table->id  . "')";
 				$type = 'complete_order';
+				$logtype = 'payment';
 			}
 			elseif($status == "Cancel"){
 				$sql = "update #__digicom_orders_details set published='-1' where orderid in ('" . $table->id  . "')";
@@ -241,7 +254,7 @@ class DigiComModelOrder extends JModelAdmin
 				'username' => JFactory::getUser()->username
 			);
 
-			DigiComSiteHelperLog::setLog('status', 'Admin order save', $table->id, 'Admin changed order#'.$table->id.', status: '.$status.', paid: '.$data['amount_paid'], json_encode($info),$status);
+			DigiComSiteHelperLog::setLog($logtype, 'Admin order save', $table->id, 'Admin changed order#'.$table->id.', status: '.$status.', paid: '.$data['amount_paid'], json_encode($info),$status);
 
 			$orders = $this->getInstance( "Orders", "DigiComModel" );
 			$orders->updateLicensesStatus($data['id'], $type);

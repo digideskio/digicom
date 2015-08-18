@@ -20,7 +20,9 @@ class DigiComSiteHelperLog {
     /*
      * setLog method
      * use to trigger event to set log
-     * @type = download,email,purchase,status
+     * @type = download,email,purchase,status,payment
+     * type : status is any change event
+     * type : payment is payment status active
      * @callback = from where event triggered or who did it
      * @message = short message about the event
      * @status = quick status about log event, if its complted or not
@@ -42,6 +44,29 @@ class DigiComSiteHelperLog {
         $logTable->store();
 
         return true;
+
+    }
+
+    /*
+    * method getLog
+    * check if any log for specific event with callback n callbackid match
+    */
+
+    public static function getLog($callback, $callbackid, $status = 'Active', $type = 'payment')
+    {
+
+      $logTable = JTable::getInstance('log','Table');
+      $logTable->load(
+        array(
+          'type'        => $type,
+          'callback'    => $callback,
+          'callbackid'  => $callbackid,
+          'userid'      => $userid,
+          'status'      => $status
+        )
+      );
+
+      return $logTable;
 
     }
 

@@ -163,10 +163,10 @@ class DigiComModelCart extends JModelItem
 				$fields = array(
 				    $db->quoteName('quantity') . ' = ' . $db->quoteName('quantity') . ' + ' . $qty
 				);
-				 
+
 				// Conditions for which records should be updated.
 				$conditions = array(
-				    $db->quoteName('sid') . ' = '.intval($sid), 
+				    $db->quoteName('sid') . ' = '.intval($sid),
 				    $db->quoteName('item_id') . ' = ' . $db->quote($pid)
 				);
 
@@ -184,7 +184,7 @@ class DigiComModelCart extends JModelItem
 
 			// Insert columns.
 			$columns = array('quantity', 'item_id', 'sid', 'userid');
-			 
+
 			// Insert values.
 			$values = array($db->quote(intval($qty)),$db->quote(intval($pid)), $db->quote(intval($sid)), $db->quote(intval($uid)));
 
@@ -246,19 +246,19 @@ class DigiComModelCart extends JModelItem
 			$item->currency = $configs->get('currency','USD');
 			$item->subtotal = $item->price * $item->quantity;
 			$item->price_formated = DigiComSiteHelperPrice::format_price( $item->price, $item->currency, false, $configs ); //sprintf( $price_format, $item->subtotal );
-			
+
 		}
 
 
 		//return $this->_items = $items;
 		$this->_items = $items;
-		
-		
+
+
 		if(count($items) > 0){
 			$this->calc_price($items, $customer, $configs);
 		}
 		return $this->_items;
-		
+
 	}
 
 	function calc_price($items,$cust_info,$configs)
@@ -472,7 +472,7 @@ class DigiComModelCart extends JModelItem
 		$sql = "select cart_details from #__digicom_session where sid='" . intval($sid) . "'";
 		$db->setQuery( $sql );
 		$promodata = $db->loadResult();
-		
+
 		$promodata = explode( "=", $promodata );
 		if ( $promodata[0] == 'promocode' )
 			$promocode = $promodata[1];
@@ -507,13 +507,13 @@ class DigiComModelCart extends JModelItem
 			$promo->error = $promodata[1];
 
 		//code exists and we're about to validate it
-		if ( $promo->id > 0 && $checkvalid == 1 ) 
+		if ( $promo->id > 0 && $checkvalid == 1 )
 		{
 
 			$promo_data = $promo;
 			$today = date('Y-m-d 00:00:00');
 			$tomorrow = date('Y-m-d  00:00:00',strtotime($today . "+1 days"));
-			
+
 			$now = strtotime($today);
 			$tomorrow = strtotime($tomorrow);
 			$timestart = strtotime($promo_data->codestart);
@@ -525,16 +525,16 @@ class DigiComModelCart extends JModelItem
 			$limit = $promo_data->codelimit;
 			$published = $promo_data->published;
 
-			if ( ($timestart >= $now) && ($timeend >= $now || $timeend == $nullDate ) && ($limit == 0 || $used < $limit) && $published == "1") 
+			if ( ($timestart >= $now) && ($timeend >= $now || $timeend == $nullDate ) && ($limit == 0 || $used < $limit) && $published == "1")
 			{
 				$error = 0; //code is valid
 				$promoerror = '';
 			}
-			else if ($published == "0") 
+			else if ($published == "0")
 			{
 				$promoerror = JText::_( "COM_DIGICOM_DISCOUNT_CODE_UNP" );
 			}
-			else if ($limit > 0  && $used  >= $limit) 
+			else if ($limit > 0  && $used  >= $limit)
 			{
 				$promoerror = JText::_( "COM_DIGICOM_DISCOUNT_CODE_EXPIRED_AMOUNT" );
 			}
@@ -542,18 +542,18 @@ class DigiComModelCart extends JModelItem
 			{
 				$promoerror = JText::_( "COM_DIGICOM_DISCOUNT_CODE_EXPIRED_DATE" );
 			}
-			else 
+			else
 			{
 				$promoerror = JText::_( "COM_DIGICOM_DISCOUNT_CODE_ENA" );
 			}
-			
+
 			if ( !empty($promoerror) ) {//promo code is invalid
 				$promo->error = $promoerror;
 				JFactory::getApplication()->enqueueMessage(JText::_($promoerror),'warning');
 			} else {
 				$promo->error = "";
 			}
-			
+
 		}
 
 		return $promo;
@@ -609,10 +609,10 @@ class DigiComModelCart extends JModelItem
 
 			if ( count( $promo_exists ) > 0 ) {//and there is such code in dabase
 				$promo_data = $promo_exists[0];
-				
+
 				$today = date('Y-m-d 00:00:00');
 				$tomorrow = date('Y-m-d  00:00:00',strtotime($today . "+1 days"));
-				
+
 				$now = strtotime($today);
 				$tomorrow = strtotime($tomorrow);
 				$timestart = strtotime($promo_data->codestart);
@@ -624,17 +624,17 @@ class DigiComModelCart extends JModelItem
 				$limit = $promo_data->codelimit;
 				$published = $promo_data->published;
 
-				if ( ($timestart >= $now) && ($timeend >= $now || $timeend == $nullDate ) && ($limit == 0 || $used < $limit) && $published == "1") 
+				if ( ($timestart >= $now) && ($timeend >= $now || $timeend == $nullDate ) && ($limit == 0 || $used < $limit) && $published == "1")
 				{
 					//add this code to user's cart
 					$sql = "update #__digicom_session set cart_details='promocode=" . $promo . "' where sid='" . $sid . "'";
 					//$jAp->enqueueMessage(JText::sprintf('COM_DIGICOM_CART_PROMOCODE_APPLIED',$promo),'success');
 				}
-				else if ($published == "0") 
+				else if ($published == "0")
 				{
 					$sql = "update #__digicom_session set cart_details='promoerror=" . (JText::_( "COM_DIGICOM_DISCOUNT_CODE_UNP" )) . "' where sid='" . intval($sid) . "'";
 				}
-				else if ($limit > 0  && $used  >= $limit) 
+				else if ($limit > 0  && $used  >= $limit)
 				{
 					$sql = "update #__digicom_session set cart_details='promoerror=" . (JText::_( "COM_DIGICOM_DISCOUNT_CODE_EXPIRED_AMOUNT" )) . "' where sid='" . intval($sid) . "'";
 				}
@@ -642,7 +642,7 @@ class DigiComModelCart extends JModelItem
 				{
 					$sql = "update #__digicom_session set cart_details='promoerror=" . (JText::_( "COM_DIGICOM_DISCOUNT_CODE_EXPIRED_DATE" )) . "' where sid='" . intval($sid) . "'";
 				}
-				else 
+				else
 				{
 					$sql = "update #__digicom_session set cart_details='promoerror=" . (JText::_( "COM_DIGICOM_DISCOUNT_CODE_ENA" )) . "' where sid='" . intval($sid) . "'";
 				}
@@ -843,39 +843,42 @@ class DigiComModelCart extends JModelItem
 		return true;
 	}
 
-	function proccessSuccess($post, $pg_plugin, $order_id, $sid,$responce,$items)
+	function proccessSuccess($post, $pg_plugin, $order_id, $sid, $responce,$items)
 	{
-		$app = JFactory::getApplication();
+		$app 			= JFactory::getApplication();
 		$customer = $this->loadCustomer($sid);
 		if(!$customer){
-			$order = $this->getOrder($order_id);
-			$sid = $customer = $order->userid;
+			$order 	= $this->getOrder($order_id);
+			$sid 		= $customer = $order->userid;
 			//print_r($customer);
 		}
-		$conf = $this->getInstance( "config", "digicomModel" );
-		$configs = $conf->getConfigs();
 
-		$result = $post;
-		$data=$responce[0];
+		$conf 		= $this->getInstance( "config", "digicomModel" );
+		$configs	= $conf->getConfigs();
+
+		$result 	= $post;
+		$data 		= $responce[0];
 
 		$this->storelog($pg_plugin, $data);
 
+		$logtype = 'status';
 		//print_r($data);jexit();
 		if(isset($data['status']))
 		{
 			$_SESSION['in_trans'] = 1;
 
-			if($data['status']=='C'){
-				$msg = JText::_("COM_DIGICOM_PAYMENT_SUCCESSFUL_THANK_YOU");
+			if($data['status'] == 'C'){
+				$msg 		= JText::_("COM_DIGICOM_PAYMENT_SUCCESSFUL_THANK_YOU");
 				$status = "Active";
+				$logtype = "payment";
 				$app->enqueueMessage($msg,'message');
-			} elseif($data['status']=='P') {
+			} elseif($data['status'] == 'P') {
 				$status = "Pending";
-				$msg = JText::_("COM_DIGICOM_PAYMENT_PENDING_THANK_YOU");
+				$msg 		= JText::_("COM_DIGICOM_PAYMENT_PENDING_THANK_YOU");
 				$app->enqueueMessage($msg, 'notice');
 			}else{
 				$status = $data['status'];
-				$msg = JText::_("COM_DIGICOM_PAYMENT_WAITING_THANK_YOU");
+				$msg 		= JText::_("COM_DIGICOM_PAYMENT_WAITING_THANK_YOU");
 				$app->enqueueMessage($msg, 'notice');
 			}
 
@@ -884,10 +887,25 @@ class DigiComModelCart extends JModelItem
 				'data' => $data,
 				'plugin' => $pg_plugin
 			);
+			//$callback, $callbackid, $status = 'Active', $type = 'payment'
+			$log = DigiComSiteHelperLog::getLog('cart proccessSuccess', $order_id, $status, $logtype);
+			//print_r($log);die;
+			if(
+					(empty($log->id) or $log->id == 0)
+					or
+					$log->status != 'Active'
+			)
+			{
 
-			DigiComSiteHelperLog::setLog('status', 'cart proccessSuccess', $order_id, 'Order id#'.$order_id.' updated & method is '.$pg_plugin, json_encode($info),$status);
+				DigiComSiteHelperLog::setLog($logtype, 'cart proccessSuccess', $order_id, 'Order id#'.$order_id.' updated & method is '.$pg_plugin, json_encode($info),$status);
 
-			$this->updateOrder($order_id,$result,$data,$pg_plugin,$status,$items,$customer);
+				$this->updateOrder($order_id,$result,$data,$pg_plugin,$status,$items,$customer);
+
+			}else{
+
+				DigiComSiteHelperLog::setLog($logtype, 'cart proccessSuccess', $order_id, 'Post recieved for Order id#'.$order_id.' from '.$pg_plugin, json_encode($info),$status);
+
+			}
 
 		}
 
