@@ -73,6 +73,11 @@ class  plgDigiCom_PayPaypal extends JPlugin
 	{
 		if(empty($layout)) $layout = "default";
 
+		// bootstrap2 check
+		$bootstrap2 	= $this->params->get( 'bootstrap2' , 0);
+		if($bootstrap2){
+			$layout = "bootstrap2";
+		}
 		$app = JFactory::getApplication();
 
 		// core path
@@ -202,8 +207,9 @@ class  plgDigiCom_PayPaypal extends JPlugin
 	* @data : the necessary info recieved from form about payment
 	* @return null
 	*/
-	function onTP_Storelog($data)
+	function onTP_Storelog($name, $data)
 	{
+		if($name != $this->_name) return;
 		plgDigiCom_PayPaypalHelper::Storelog($this->_name,$data);
 	}
 

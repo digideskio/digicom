@@ -119,18 +119,21 @@ class DigiComViewCategory extends JViewCategory
 			$results = $dispatcher->trigger('onContentAfterDisplay', array('com_digicom.category', &$item, &$item->params, 0));
 			$item->event->afterDisplayContent = trim(implode("\n", $results));
 
-			$item->images = DigiComSiteHelperDigiCom::getThumbnail($item->images);
 		}
 
 		// Check for layout override only if this is not the active menu item
 		// If it is the active menu item, then the view and category id will match
-		$app = JFactory::getApplication();
-		$menus		= $app->getMenu();
-		$title		= null;
+		$app 		= JFactory::getApplication();
+		$menus	= $app->getMenu();
+		$title	= null;
 
 		// Get the layout from the merged category params
 		if ($layout = $this->category->params->get('category_layout'))
 		{
+			$this->setLayout($layout);
+		}
+		else{
+			$layout = $this->configs->get('template','default');
 			$this->setLayout($layout);
 		}
 
@@ -225,6 +228,7 @@ class DigiComViewCategory extends JViewCategory
 		$template->rander('category', $this->getLayout());
 
 		return parent::display($tpl);
+
 	}
 
 	/**
@@ -242,11 +246,13 @@ class DigiComViewCategory extends JViewCategory
 		{
 			$path = array(array('title' => $this->category->title, 'link' => ''));
 			$category = $this->category->getParent();
+			if(!empty($category)){
+				while (($menu->query['option'] != 'com_digicom' || $menu->query['view'] == 'product' || $id != $category->id) && $category->id > 1)
+				{
+					$path[] = array('title' => $category->title, 'link' => DigiComSiteHelperRoute::getCategoryRoute($category->id));
+					$category = $category->getParent();
+				}
 
-			while (($menu->query['option'] != 'com_digicom' || $menu->query['view'] == 'product' || $id != $category->id) && $category->id > 1)
-			{
-				$path[] = array('title' => $category->title, 'link' => DigiComSiteHelperRoute::getCategoryRoute($category->id));
-				$category = $category->getParent();
 			}
 
 			$path = array_reverse($path);
@@ -270,6 +276,7 @@ class DigiComViewCategory extends JViewCategory
 	public function commonCategoryDisplay()
 	{
 		$app    = JFactory::getApplication();
+		$menus		= $app->getMenu();
 		$user   = JFactory::getUser();
 		$params = $app->getParams();
 
@@ -302,10 +309,42 @@ class DigiComViewCategory extends JViewCategory
 			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
-		// Setup the category parameters.
-		$cparams          = $category->getParams();
+		// Lets get template layout
+		$categoryParams = new Registry;
+		$categoryParams->loadString($category->getParams());
+		$category_layout = $categoryParams->get('category_layout','');
+		if(!empty($category_layout)){
+			$currentTemplate = true;
+		}else{
+			$currentTemplate = false;
+		}
+
+		if(!$currentTemplate){
+			while ($category && $category->id > 1)
+			{
+				$category = $category->getParent();
+
+				if($currentTemplate) continue;
+
+				$catParams = new Registry;
+				$catParams->loadString($category->getParams());
+
+				$category_layout = $catParams->get('category_layout','');
+				if(!empty($category_layout)){
+					$currentTemplate = true;
+					$categoryParams->set('category_layout',$catParams->get('category_layout'));
+				}else{
+					$currentTemplate = false;
+				}
+
+			}
+
+		}
+
+		// lets marge
+		$category->params = $categoryParams;
 		$category->params = clone $params;
-		$category->params->merge($cparams);
+		$category->params->merge($categoryParams);
 
 		$children = array($category->id => $children);
 

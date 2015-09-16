@@ -8,7 +8,8 @@
  */
 
 defined('_JEXEC') or die;
-
+use Joomla\Registry\Registry;
+use Joomla\String\String;
 /**
  * Methods supporting a list of product records.
  *
@@ -371,22 +372,37 @@ class DigiComModelProducts extends JModelList
 	 */
 	public function getItems()
 	{
-		$items = parent::getItems();
-
-		if (JFactory::getApplication()->isSite())
+		if ($items = parent::getItems())
 		{
-			$user = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
-
-			for ($x = 0, $count = count($items); $x < $count; $x++)
+			foreach($items as $key=>$item)
 			{
-				// Check the access level. Remove articles the user shouldn't see
-				if (!in_array($items[$x]->access, $groups))
-				{
-					unset($items[$x]);
-				}
+					// Convert the images field to an array.
+					$registry = new Registry;
+					$registry->loadString($item->images);
+					$item->images = $registry->toArray();
+					if(isset($item->images['image_intro'])){
+						$item->image_intro	=	$item->images['image_intro'];
+						$item->image_full		=	$item->images['image_full'];
+					}else{
+						$item->image_intro	=	$item->images;
+					}
 			}
 		}
+
+		// if (JFactory::getApplication()->isSite())
+		// {
+		// 	$user = JFactory::getUser();
+		// 	$groups = $user->getAuthorisedViewLevels();
+		//
+		// 	for ($x = 0, $count = count($items); $x < $count; $x++)
+		// 	{
+		// 		// Check the access level. Remove articles the user shouldn't see
+		// 		if (!in_array($items[$x]->access, $groups))
+		// 		{
+		// 			unset($items[$x]);
+		// 		}
+		// 	}
+		// }
 
 		return $items;
 	}

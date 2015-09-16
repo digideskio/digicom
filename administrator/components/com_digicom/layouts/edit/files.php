@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 $document = JFactory::getDocument();
 $document->addScriptDeclaration('var DIGICOM_ALERT_REMOVE_FILES = "'. JText::_("COM_DIGICOM_PRODUCTS_FILES_REMOVE_WARNING") . '";');
-$document->addScript(JURI::root(true).'/media/digicom/assets/js/repeatable-fields.js?v=1.0.0');
+$document->addScript(JURI::root(true).'/media/com_digicom/js/repeatable-fields.js?v=1.0.0');
 ?>
 
 <fieldset class="adminform">
@@ -21,30 +21,24 @@ $document->addScript(JURI::root(true).'/media/digicom/assets/js/repeatable-field
 		<table class="table table-striped wrapper" id="itemList">
 			<thead>
 				<tr class="row">
-					<th width="10%">
-						<i class="icon-menu-2"></i>
-					</th>
-					<th width="10%">
-						File Name
-					</th>
-					<th width="70%">
-						File URL
-					</th>
-					<th style="width: 10%"></th>
+					<th><i class="icon-menu-2"></i></th>
+					<th><?php echo JText::_('COM_DIGICOM_PRODUCT_FILE_NAME_LABEL');?></th>
+					<th><?php echo JText::_('COM_DIGICOM_PRODUCT_FILE_NAME_LABEL');?></th><th>File URL</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody class="container">
 				<tr class="template row">
-					<td width="10%">
+					<td>
 						<span class="move"><i class="icon-move"></i></span>
 						<input type="hidden" name="jform[file][{{row-count-placeholder}}][id]" id="digicom_files_id" value="" />
 					</td>
 
-					<td width="10%">
+					<td>
 						<input type="text" name="jform[file][{{row-count-placeholder}}][name]" id="files_row_count_placeholder_id_name" placeholder="File Name"/>
 					</td>
 
-					<td width="70%">
+					<td>
 						<div class="input-prepend input-append" style="display: block;">
 							<input type="text" name="jform[file][{{row-count-placeholder}}][url]" id="files_row_count_placeholder_id_url" placeholder="Upload or enter the file URL" class="span8"/>
 							<a class="files_uploader_modal btn modal" title="Select"
@@ -54,7 +48,7 @@ $document->addScript(JURI::root(true).'/media/digicom/assets/js/repeatable-field
 						</div>
 					</td>
 
-					<td width="10%">
+					<td>
 						<span class="remove"><i class="icon-remove"></i></span>
 						<input type="hidden" name="jform[file][{{row-count-placeholder}}][ordering]" value="" id="files_row_count_placeholder_id_ordering"/>
 					</td>
@@ -70,17 +64,17 @@ $document->addScript(JURI::root(true).'/media/digicom/assets/js/repeatable-field
 						if(is_array($value)) $value = (object) $value;
 					?>
 					<tr class="row">
-						<td width="10%">
+						<td>
 							<span class="move"><i class="icon-move"></i></span>
 							<input type="hidden" name="jform[file][<?php echo $key; ?>][id]" id="digicom_files_id" value="<?php echo (isset($value->id) ? $value->id : ''); ?>" />
 						</td>
 
-						<td width="10%">
+						<td>
 							<input type="text" id="files_<?php echo $key; ?>_name"
 							name="jform[file][<?php echo $key; ?>][name]" placeholder="File Name" value="<?php echo (isset($value->name) ? $value->name : ''); ?>"/>
 						</td>
 
-						<td width="70%">
+						<td>
 							<div class="input-prepend input-append" style="display: block;">
 								<input type="text" name="jform[file][<?php echo $key; ?>][url]" id="files_<?php echo $key; ?>_url" placeholder="Upload or enter the file URL" class="span8"
 								value="<?php echo (isset($value->url) ? $value->url : ''); ?>"
@@ -92,7 +86,7 @@ $document->addScript(JURI::root(true).'/media/digicom/assets/js/repeatable-field
 							</div>
 						</td>
 
-						<td width="10%">
+						<td>
 							<input type="hidden" name="jform[file][<?php echo $key; ?>][ordering]" id="files_ordering_<?php echo $key; ?>"
 								value="<?php echo (isset($value->ordering) ? $value->ordering : ''); ?>"
 								/>
@@ -106,8 +100,8 @@ $document->addScript(JURI::root(true).'/media/digicom/assets/js/repeatable-field
 			</tbody>
 			<tfoot>
 				<tr class="row">
-					<td width="10%" colspan="4">
-						<span class="add btn btn-mini">Add</span>
+					<td colspan="7">
+						<span class="add btn btn-success">Add File +</span>
 						<input type="hidden" name="jform[files_remove_id]" value="" id="jform_files_remove_id"/>
 					</td>
 				</tr>

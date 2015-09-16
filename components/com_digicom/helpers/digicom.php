@@ -616,51 +616,6 @@ class DigiComSiteHelperDigicom {
 		JFactory::getApplication()->close();
 	}
 
-	/*
-	* get thumbnail
-	* images (string): image path like : /images/digicom.png
-	*/
-	public static function getThumbnail($image){
-		jimport( 'joomla.filesystem.folder' );
-		jimport( 'joomla.filesystem.file' );
-
-		$params = JComponentHelper::getComponent('com_digicom')->params;
-
-		if(empty($image)) return '';
-
-		if(!JFile::exists($image)) return $image;
-
-		if($params->get('image_thumb_enable')){
-
-			$image_thumb_width = $params->get('image_thumb_width');
-			$image_thumb_height = $params->get('image_thumb_height');
-			$image_thumb_method = $params->get('image_thumb_method',6);
-
-			$imageunique = md5($image.$image_thumb_width.$image_thumb_height);
-			$path = JPATH_ROOT . '/images/digicom/products';
-			JFolder::create($path);
-
-			// Generate thumb name
-			$jimage = new JImage($image);
-
-			$filename       = pathinfo($jimage->getPath(), PATHINFO_FILENAME);
-			$fileExtension  = pathinfo($jimage->getPath(), PATHINFO_EXTENSION);
-			$thumbFileName  = $filename . '_' . $image_thumb_width . 'x' . $image_thumb_height . '.' . $fileExtension;
-
-			$thumbpath = JPATH_ROOT.'/images/digicom/products/'.$thumbFileName;
-			$thumburl = JURI::root().'images/digicom/products/'.$thumbFileName;
-			if(JFile::exists($thumbpath)) return $thumburl;
-
-			$image = $jimage->createThumbs(array($image_thumb_width.'x'.$image_thumb_height), $image_thumb_method,$path);
-			$thumburl = str_replace(JPATH_SITE.'/', '', $image[0]->getPath());
-			return $thumburl;
-
-		}else{
-			return $image;
-		}
-
-	}
-
 	public static function loadModules($position, $style = 'raw')
 	{
 		jimport('joomla.application.module.helper');
@@ -671,7 +626,7 @@ class DigiComSiteHelperDigicom {
 		}
 	}
 
-	public static function get_country_options( $profile, $ship = false, $configs ) {
+	public static function get_country_options( $profile, $ship = false, $configs , $onchange=true) {
 
 		$db 	= JFactory::getDBO();
 		$query = $db->getQuery(true)
@@ -720,9 +675,14 @@ class DigiComSiteHelperDigicom {
 			$options[] = JHTML::_('select.option', $value->country, $value->country);
 		endforeach;
 
+		if($onchange){
+			$onChange = ' onChange="changeProvince();"';
+		}else{
+			$onChange= '';
+		}
 
 		## Create <select name="country" class="inputbox"></select> ##
-		return JHTML::_('select.genericlist', $options, 'country', 'id="country" class="inputbox" onChange="changeProvince();"', 'value', 'text', $default);
+		return JHTML::_('select.genericlist', $options, 'country', 'id="country" class="inputbox"'.$onChange, 'value', 'text', $default);
 
 	}
 
@@ -766,8 +726,9 @@ class DigiComSiteHelperDigicom {
 
 	}
 
-	public static function getPaymentPlugins($configs){
+	public static function getPaymentPlugins($configs, $processor = 'offline'){
 
+		$lang = JFactory::getLanguage();
 		$db = JFactory::getDBO();
 		$query = $db->getQuery(true)
 					->select('extension_id as id , name, element,enabled as published, params')
@@ -777,7 +738,11 @@ class DigiComSiteHelperDigicom {
 		$db->setQuery($query);
 		$gatewayplugin = $db->loadobjectList();
 
-		$lang = JFactory::getLanguage();
+		$default = $processor;
+		if(empty($default)){
+				$default = $configs->get('default_payment','offline');
+		}
+
 		$options = array();
 		foreach($gatewayplugin as $gateway)
 		{
@@ -785,7 +750,7 @@ class DigiComSiteHelperDigicom {
 			$options[] = JHTML::_('select.option',$gateway->element, $params->plugin_name);
 		}
 
-		return JHTML::_('select.genericlist', $options, 'processor', 'class="inputbox required"', 'value', 'text', $configs->get('default_payment','offline'), 'processor' );
+		return JHTML::_('select.genericlist', $options, 'processor', 'class="inputbox required" data-digicom-id="processor"', 'value', 'text', $default, 'processor' );
 
 	}
 

@@ -14,7 +14,7 @@ JHtml::_('behavior.formvalidation');
 $app=JFactory::getApplication();
 $input = $app->input;
 ?>
-<div class="digicom">
+<div id="digicom">
 	<form name="adminForm" id="adminForm"
 		action="<?php echo JRoute::_('index.php?option=com_digicom&view=billing'); ?>"
 		method="post"
@@ -25,7 +25,7 @@ $input = $app->input;
 	<?php foreach ($this->form->getFieldsets() as $fieldset): // Iterate through the form fieldsets and display each one.?>
 		<?php $fields = $this->form->getFieldset($fieldset->name);?>
 		<?php if (count($fields)):?>
-			<fieldset>
+			<fieldset class="<?php echo $fieldset->name; ?>">
 			<?php if (isset($fieldset->label)):// If the fieldset has a label set, display it as the legend.?>
 				<legend><?php echo JText::_($fieldset->label);?></legend>
 			<?php endif;?>
@@ -33,7 +33,7 @@ $input = $app->input;
 				<?php if ($field->hidden):// If the field is hidden, just display the input.?>
 					<?php echo $field->input;?>
 				<?php else: ?>
-					<div class="control-group">
+					<div class="control-group group-<?php echo $field->class;?>">
 						<div class="control-label">
 							<?php echo $field->label; ?>
 						</div>
@@ -53,7 +53,7 @@ $input = $app->input;
 			<input type="hidden" name="option" value="com_digicom" />
 			<input type="hidden" name="view" value="billing" />
 			<input type="hidden" name="task" value="profile.billing" />
-			<input type="hidden" name="return" value="<?php echo $input->get("return", base64_encode(JRoute::_('index.php?option=com_digicom&view=cart')) ); ?>" />
+			<input type="hidden" name="return" value="<?php echo $input->get("return", base64_encode(JRoute::_("index.php?option=com_digicom&view=cart")), "base64"); ?>" />
 		</div>
 	</div>
 	<?php echo JHtml::_('form.token');?>

@@ -53,12 +53,12 @@ defined('_JEXEC') or die;
 	<div class="control-group">
 		<button type="submit" class="btn btn-primary" style="margin-top: 10px;">
 			Login
-			<i class="icon-chevron-right icon-white"></i>
+			<i class="glyphicon glyphicon-chevron-right glyphicon-white"></i>
 		</button>
 	</div>
 
 	<input type="hidden" name="option" value="com_digicom" />
 	<input type="hidden" name="task" value="profile.logCustomerIn" />
-	<input type="hidden" name="return" value="<?php echo JFactory::getApplication()->input->get("return", ""); ?>" />
+	<input type="hidden" name="return" value="<?php echo JFactory::getApplication()->input->get("return", "","base64"); ?>" />
 	<?php echo JHtml::_('form.token');?>
 </form>

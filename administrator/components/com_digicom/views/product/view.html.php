@@ -21,7 +21,7 @@ class DigiComViewProduct extends JViewLegacy
 	protected $item;
 
 	protected $form;
-	
+
 	protected $configs;
 
 	/**
@@ -45,7 +45,7 @@ class DigiComViewProduct extends JViewLegacy
 		{
 			//set toolber
 			DigiComHelperDigiCom::addSubmenu('products');
-			$this->addToolbar();			
+			$this->addToolbar();
 			$this->sidebar = DigiComHelperDigiCom::renderSidebar();
 		}
 
@@ -68,8 +68,17 @@ class DigiComViewProduct extends JViewLegacy
 		// Since we don't track these assets at the item level, use the category id.
 		$canDo		= JHelperContent::getActions('com_digicom', 'category', $this->item->catid);
 
-		JToolbarHelper::title(JText::_('COM_DIGICOM_MANAGER_PRODUCT'), 'link products');
+		$text = ($isNew ? JText::_('COM_DIGICOM_MANAGER_PRODUCT_NEW_TITLE') : JText::_('COM_DIGICOM_MANAGER_PRODUCT_EDIT_TITLE') );
 
+		JToolbarHelper::title(JText::_('COM_DIGICOM_MANAGER_PRODUCT_TITLE_SITE'), 'link products');
+
+		$bar = JToolBar::getInstance('toolbar');
+		$layout = new JLayoutFile('toolbar.title');
+		$title=array(
+				'title' => $text,
+				'class' => 'product'
+			);
+		$bar->appendButton('Custom', $layout->render($title), 'title');
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||(count($user->getAuthorisedCategories('com_digicom', 'core.create')))))
@@ -88,7 +97,7 @@ class DigiComViewProduct extends JViewLegacy
 		{
 			JToolbarHelper::save2copy('product.save2copy');
 		}
-		
+
 		if (empty($this->item->id))
 		{
 			JToolbarHelper::cancel('product.cancel');
@@ -105,17 +114,8 @@ class DigiComViewProduct extends JViewLegacy
 
 		JToolbarHelper::divider();
 
-		$bar = JToolBar::getInstance('toolbar');
-		
 		$layout = new JLayoutFile('toolbar.video');
 		$bar->appendButton('Custom', $layout->render(array()), 'video');
-		
-		$layout = new JLayoutFile('toolbar.title');
-		$title=array(
-				'title' => JText::_( 'COM_DIGICOM_PRODUCT_ADD_EDIT_TOOLBAR_TITLE' ),
-				'class' => 'product'
-			);
-		$bar->appendButton('Custom', $layout->render($title), 'title');
 
 	}
 }

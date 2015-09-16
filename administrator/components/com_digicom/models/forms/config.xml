@@ -371,6 +371,7 @@
 				class="title"
 				label="COM_DIGICOM_SETTINGS_THEME_HEADER_NOTICE"
 				/>
+
 			<field
 				name="template"
 				type="themelayout"
@@ -378,6 +379,7 @@
 				label="COM_DIGICOM_SETTINGS_THEME_TEMPLATE_TITLE"
 				description="COM_DIGICOM_SETTINGS_THEME_TEMPLATE_TITLE_DESC"
 				/>
+
 			<field
 				name="category_cols"
 				type="list"
@@ -392,50 +394,26 @@
 			</field>
 
 			<field
-				name="thumb_image_size_spacer"
-				type="spacer"
-				class="title"
-				label="COM_DIGICOM_THEME_THUMBNAIL_IMAGE_SETTINGS_LABEL"
-				/>
-			<field
-				name="image_thumb_enable"
+				name="load_core_css"
 				type="radio"
 				class="btn-group"
-				label="COM_DIGICOM_IMAGE_THUMB_ENABLE_LABEL"
-				description="COM_DIGICOM_IMAGE_THUMB_ENABLE_DESC"
+				label="COM_DIGICOM_THEME_LOAD_CORE_CSS_LABEL"
+				description="COM_DIGICOM_THEME_LOAD_CORE_CSS_DESC"
 				default="1">
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 			</field>
-			<field
-				name="image_thumb_width"
-				type="number"
-				label="COM_DIGICOM_IMAGE_THUMB_WIDTH_LABEL"
-				description="COM_DIGICOM_IMAGE_THUMB_WIDTH_DESC"
-				default="400"
-				/>
-			<field
-				name="image_thumb_height"
-				type="number"
-				label="COM_DIGICOM_IMAGE_THUMB_HEIGHT_LABEL"
-				description="COM_DIGICOM_IMAGE_THUMB_HEIGHT_DESC"
-				default="400"
-				/>
-			<field
-				name="image_thumb_method"
-				type="list"
-				label="COM_DIGICOM_IMAGE_THUMB_METHOD_LABEL"
-				description="COM_DIGICOM_IMAGE_THUMB_METHOD_DESC"
-				default="5"
-				>
-				<option value="6">COM_DIGICOM_IMAGE_RESIZE_METHOD_SCALE_FIT</option>
-				<option value="1">COM_DIGICOM_IMAGE_RESIZE_METHOD_SCALE_FILL</option>
-				<option value="2">COM_DIGICOM_IMAGE_RESIZE_METHOD_SCALE_INSIDE</option>
-				<option value="3">COM_DIGICOM_IMAGE_RESIZE_METHOD_SCALE_OUTSIDE</option>
-				<option value="4">COM_DIGICOM_IMAGE_RESIZE_METHOD_CROP</option>
-				<option value="5">COM_DIGICOM_IMAGE_RESIZE_METHOD_CROP_RESIZE</option>
-			</field>
 
+			<field
+				name="load_bootstrap3"
+				type="radio"
+				class="btn-group"
+				label="COM_DIGICOM_THEME_LOAD_BOOTSTRAP3_LABEL"
+				description="COM_DIGICOM_THEME_LOAD_BOOTSTRAP3_DESC"
+				default="1">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+			</field>
 
 		</fieldset>
 
