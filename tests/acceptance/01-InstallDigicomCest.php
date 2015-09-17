@@ -9,7 +9,7 @@
 
 use \AcceptanceTester;
 
-class InstallWeblinksCest
+class InstallDigicomCest
 {
 	public function installJoomla(AcceptanceTester $I)
 	{
@@ -20,12 +20,12 @@ class InstallWeblinksCest
 	}
 
 	// tests
-	public function installWeblinks(AcceptanceTester $I)
+	public function installDigicom(AcceptanceTester $I)
 	{
 		$I->doAdministratorLogin();
-		$I->comment('get Weblinks repository folder from acceptance.suite.yml (see _support/AcceptanceHelper.php)');
+		$I->comment('get Digicom repository folder from acceptance.suite.yml (see _support/AcceptanceHelper.php)');
 		$path = $I->getConfiguration('repo_folder');
-		$I->installExtensionFromFolder($path . 'src/com_weblinks/');
+		$I->installExtensionFromFolder($path . 'build/release/src/');
 		$I->doAdministratorLogout();
 	}
 }

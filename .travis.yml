@@ -10,7 +10,6 @@ matrix:
 before_script:
 # Make sure all dev dependencies are installed
 - /home/travis/.phpenv/versions/5.5/bin/composer self-update
-- composer install
 - sudo apt-get update -qq
 # Install Apache
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
@@ -30,6 +29,18 @@ before_script:
 - sudo apt-get install fluxbox -y --force-yes
 - fluxbox &
 - sleep 3 # give fluxbox some time to start
+# zip
+- sudo apt-get install zip
+- sleep 3 # give fluxbox some time to start
+
+# Run Build command
+- cd build/
+- php phing.phar
+- cd release
+- mv pkg_digicom_* latest.zip
+- unzip latest.zip -d src
+- cd ../../
+# we are ready to run composer
 - composer update
 
 script:
