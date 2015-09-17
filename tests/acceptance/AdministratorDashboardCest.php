@@ -20,10 +20,10 @@ class AdministratorCategoriesCest
 
         $I->amGoingTo('Navigate to Dashboard page in /administrator/');
         $I->amOnPage('/administrator/index.php?option=com_digicom');
-        $I->waitForText('Digicom Dashboard','30',['id' => 'page-title']);
-        $I->expectTo('Dashboard');
+        // $I->waitForText('Digicom Dashboard','30',['css' => 'h1']);
+        $I->expectTo('See Dashboard');
         $I->checkForPhpNoticesOrWarnings();
-        $I->see('Report of the Month ',['id' => 'j-main-container']);
+        $I->see('Dashboard',['id' => 'page-title']);
     }
 
     // public function administratorCreateCategory(AcceptanceTester $I)
