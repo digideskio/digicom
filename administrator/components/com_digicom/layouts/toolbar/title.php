@@ -13,4 +13,4 @@ defined('_JEXEC') or die;
 $title = $displayData['title'];
 $class = $displayData['class'];
 ?>
-<h3 class="<?php echo $class; ?>"><?php echo $title; ?></h3>
+<h3 class="<?php echo $class; ?>" id="page-title"><?php echo $title; ?></h3>
